@@ -1,10 +1,19 @@
 APPS = 
 
-DRIVERS = 
+DRIVERS = driver/dummy.o \
+			driver/loopback.o \
 
 OBJS = util.o \
+		net.o \
+		ip.o \
+		icmp.o \
+		ether.o \
+		arp.o \
+		udp.o \
+		tcp.o \
 
-TESTS = test/step0.exe \
+TESTS = test/step25.exe \
+
 
 CFLAGS := $(CFLAGS) -g -W -Wall -Wno-unused-parameter -iquote .
 
@@ -12,6 +21,9 @@ ifeq ($(shell uname),Linux)
   # Linux specific settings
   BASE = platform/linux
   CFLAGS := $(CFLAGS) -pthread -iquote $(BASE)
+  LDFLAGS := $(LDFLAGS) -lrt
+  DRIVERS := $(DRIVERS) $(BASE)/driver/ether_tap.o
+  OBJS := $(OBJS) $(BASE)/intr.o $(BASE)/sched.o
 endif
 
 ifeq ($(shell uname),Darwin)
