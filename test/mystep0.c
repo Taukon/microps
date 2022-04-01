@@ -55,6 +55,7 @@ setup(void)
     }
 
     //////////////////socket_ether_device
+    //ETHER_DEVICE,ETHER_SOC_IP_ADDR,ETHER_DEFAULT_GATEWAY are from mystep.h
 
     dev = ether_soc_init(ETHER_DEVICE);
 
@@ -62,9 +63,8 @@ setup(void)
         errorf("ether_soc_init() failure");
         return -1;
     }
-    iface = ip_iface_alloc(ETHER_SOC_IP_ADDR, ETHER_SOC_NETMASK);
-    //char netmask[16];
-    //iface = ip_iface_alloc(ETHER_SOC_IP_ADDR, ip_soc_netmask(dev,netmask,sizeof(netmask)));
+    char netmask[16];
+    iface = ip_iface_alloc(ETHER_SOC_IP_ADDR, ip_soc_netmask(dev,netmask,sizeof(netmask)));
     if (!iface) {
         errorf("ip_iface_alloc() failure");
         return -1;

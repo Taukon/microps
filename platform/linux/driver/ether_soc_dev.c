@@ -12,6 +12,8 @@
 #include <sys/poll.h>
 #include <linux/if.h>
 #include <linux/if_tun.h>
+#include <arpa/inet.h>
+#include <netpacket/packet.h>
 
 #include "platform.h"
 
@@ -53,7 +55,7 @@ static int ether_soc_addr(struct net_device *dev)
     close(soc);
     return 0;
 }
-//todo
+
 char *ip_soc_netmask(struct net_device *dev, char *mask_addr, size_t size){
     int soc;
     struct ifreq ifr = {};
@@ -62,6 +64,7 @@ char *ip_soc_netmask(struct net_device *dev, char *mask_addr, size_t size){
         errorf("socket: %s, dev=%s", strerror(errno), dev->name);
         return NULL;
     }
+
     strncpy(ifr.ifr_name, PRIV(dev)->name, sizeof(ifr.ifr_name)-1);
     if (ioctl(soc, SIOCGIFNETMASK, &ifr) == -1) {
         errorf("ioctl [SIOCGIFNETMASK]: %s, dev=%s", strerror(errno), dev->name);
@@ -72,14 +75,12 @@ char *ip_soc_netmask(struct net_device *dev, char *mask_addr, size_t size){
     close(soc);
 
     uint8_t *u8;
-    u8 = (uint8_t *)ifr.ifr_netmask.sa_data;
-    printf("mask---%d.%d.%d.%d\n", u8[2], u8[3], u8[0], u8[1]);////
-    snprintf(mask_addr, size, "%d.%d.%d.%d", u8[2], u8[3], u8[0], u8[1]);
+    u8 = (uint8_t *)(&((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
+    printf("\nmask---%d.%d.%d.%d\n\n", u8[0], u8[1], u8[2], u8[3]);
+    snprintf(mask_addr, size, "%d.%d.%d.%d", u8[0], u8[1], u8[2], u8[3]);
 
     return mask_addr;
 }
-
-#include <netpacket/packet.h>
 
 static int ether_soc_open(struct net_device *dev)
 {
