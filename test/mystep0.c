@@ -63,6 +63,7 @@ setup(void)
         errorf("ether_soc_init() failure");
         return -1;
     }
+    debugf("\n      ETHER_SOC_IP_ADDR: %s\n",ETHER_SOC_IP_ADDR);
     char netmask[16];
     iface = ip_iface_alloc(ETHER_SOC_IP_ADDR, ip_soc_netmask(dev,netmask,sizeof(netmask)));
     if (!iface) {

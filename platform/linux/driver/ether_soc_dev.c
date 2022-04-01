@@ -76,7 +76,6 @@ char *ip_soc_netmask(struct net_device *dev, char *mask_addr, size_t size){
 
     uint8_t *u8;
     u8 = (uint8_t *)(&((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
-    printf("\nmask---%d.%d.%d.%d\n\n", u8[0], u8[1], u8[2], u8[3]);
     snprintf(mask_addr, size, "%d.%d.%d.%d", u8[0], u8[1], u8[2], u8[3]);
 
     return mask_addr;
